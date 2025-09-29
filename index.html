@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Gas Bidding – Cheapest Combo (Price per MMSCF)</title>
+  <title>Gas Bidding – Cheapest Combo (Price per MMBtu)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -25,9 +25,7 @@
       background: linear-gradient(180deg, #0b1220, var(--bg));
       color: var(--text);
     }
-    .container {
-      max-width: 1100px; margin: 32px auto; padding: 0 16px;
-    }
+    .container { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
     .card {
       background: rgba(17, 24, 39, 0.85);
       border: 1px solid var(--border);
@@ -37,9 +35,7 @@
     }
     h1 { font-size: 1.6rem; margin: 0 0 10px; }
     .sub { color: var(--sub); font-size: 0.95rem; margin-bottom: 16px; }
-    .grid {
-      display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;
-    }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
     .row { display: flex; gap: 8px; flex-wrap: wrap; }
     label { font-size: 0.9rem; color: var(--sub); }
     input[type="text"], input[type="number"] {
@@ -57,9 +53,8 @@
     .btn:hover { border-color: var(--accent-2); }
     .btn.primary { background: var(--accent-2); border-color: var(--accent-2); color: white; }
     .btn.success { background: var(--accent); border-color: var(--accent); color: #08140a; }
-    .btn.danger { background: var(--danger); border-color: var(--danger); color: white; }
-    .btn.warning { background: var(--warning); border-color: var(--warning); color: #1a1203; }
-    .btn.ghost { background: transparent; }
+    .btn.danger  { background: var(--danger); border-color: var(--danger); color: white; }
+    .btn.ghost   { background: transparent; }
     table { width: 100%; border-collapse: collapse; }
     th, td {
       text-align: left; padding: 10px 8px; border-bottom: 1px dashed var(--border);
@@ -88,7 +83,7 @@
   <div class="container">
     <div class="card">
       <h1>Gas Bidding – Cheapest Combo</h1>
-      <div class="sub">Enter bids priced <b>per MMSCF</b>, set a target volume, then compute the least-cost selection.</div>
+      <div class="sub">Enter bids priced <b>per MMBtu</b>, set a target volume in <b>MMBtu</b>, then compute the least-cost selection.</div>
 
       <div class="grid">
         <div class="col" style="grid-column: span 3;">
@@ -96,8 +91,8 @@
           <input id="currency" type="text" value="USD" aria-label="Currency label (e.g., USD, RM)" />
         </div>
         <div class="col" style="grid-column: span 3;">
-          <label>Target volume (MMSCF)</label>
-          <input id="target" type="number" min="0" step="0.0001" value="100" aria-label="Target volume in MMSCF" />
+          <label>Target volume (MMBtu)</label>
+          <input id="target" type="number" min="0" step="0.0001" value="100000" aria-label="Target volume in MMBtu" />
         </div>
         <div class="col" style="grid-column: span 3;">
           <label>Round decimals</label>
@@ -111,7 +106,7 @@
 
       <div class="mt-16 row">
         <button class="btn" id="btn-add">Add Row</button>
-        <label class="small">Tip: paste on any cell to auto-fill columns from a comma-separated line (Supplier, PricePerMMSCF, VolumeMMSCF).</label>
+        <label class="small">Tip: paste on any cell to auto-fill columns from a comma-separated line (Supplier, PricePerMMBtu, VolumeMMBtu).</label>
       </div>
 
       <div class="mt-8 wrap">
@@ -120,8 +115,8 @@
             <tr>
               <th>#</th>
               <th>Supplier</th>
-              <th class="right">Price / MMSCF</th>
-              <th class="right">Max Volume (MMSCF)</th>
+              <th class="right">Price / MMBtu</th>
+              <th class="right">Max Volume (MMBtu)</th>
               <th class="center">Keep?</th>
               <th class="center">Remove</th>
             </tr>
@@ -141,7 +136,7 @@
       <div class="mt-16">
         <div class="row">
           <button class="btn success" id="btn-export-solution" disabled>Export Solution CSV</button>
-          <span class="small">Columns: Supplier, TakenVolume(MMSCF), UnitPrice(/MMSCF), Cost</span>
+          <span class="small">Columns: Supplier, TakenVolume(MMBtu), UnitPrice(/MMBtu), Cost</span>
         </div>
 
         <div id="results" class="mt-8 hidden">
@@ -156,8 +151,8 @@
                 <tr>
                   <th>#</th>
                   <th>Supplier</th>
-                  <th class="right">Taken (MMSCF)</th>
-                  <th class="right">Unit Price (/MMSCF)</th>
+                  <th class="right">Taken (MMBtu)</th>
+                  <th class="right">Unit Price (/MMBtu)</th>
                   <th class="right">Cost</th>
                 </tr>
               </thead>
@@ -170,7 +165,7 @@
                   <th class="right" id="sol-total-cost">0</th>
                 </tr>
                 <tr>
-                  <th colspan="2" class="right">Weighted Avg Price (/MMSCF)</th>
+                  <th colspan="2" class="right">Weighted Avg Price (/MMBtu)</th>
                   <th class="right" id="sol-wap" colspan="3">0</th>
                 </tr>
               </tfoot>
@@ -183,17 +178,17 @@
         <details>
           <summary><span class="pill">CSV format help</span></summary>
           <div class="small" style="margin-top:10px;">
-            <p>CSV columns (no header needed): <code>Supplier, PricePerMMSCF, MaxVolumeMMSCF</code></p>
+            <p>CSV columns (no header needed): <code>Supplier, PricePerMMBtu, MaxVolumeMMBtu</code></p>
             <p>Example:</p>
-            <pre class="kbd">Alpha Gas, 10.75, 80
-Beta LNG,  11.20, 50
-Vittol,    10.50, 40
-Shell,     11.00, 100</pre>
+            <pre class="kbd">Alpha Gas, 10.75, 80000
+Beta LNG,  11.20, 50000
+Vitol,     10.50, 40000
+Shell,     11.00, 100000</pre>
           </div>
         </details>
       </div>
 
-      <div class="footer">Made for quick gas bid screening (price per MMSCF). No data leaves your browser.</div>
+      <div class="footer">All values in MMBtu. No data leaves your browser.</div>
     </div>
   </div>
 
@@ -223,8 +218,8 @@ Shell,     11.00, 100</pre>
       tr.innerHTML = `
         <td class="center idx"></td>
         <td><input type="text" placeholder="Supplier" value="${(data.supplier ?? "").toString().replace(/"/g, '&quot;')}" /></td>
-        <td class="num"><input type="number" step="0.0001" min="0" placeholder="Price per MMSCF" value="${data.price ?? ""}" /></td>
-        <td class="num"><input type="number" step="0.0001" min="0" placeholder="Max Volume (MMSCF)" value="${data.volume ?? ""}" /></td>
+        <td class="num"><input type="number" step="0.0001" min="0" placeholder="Price per MMBtu" value="${data.price ?? ""}" /></td>
+        <td class="num"><input type="number" step="0.0001" min="0" placeholder="Max Volume (MMBtu)" value="${data.volume ?? ""}" /></td>
         <td class="center"><input type="checkbox" class="keep" ${data.keep === false ? "" : "checked"} title="Uncheck to exclude a row without deleting it" /></td>
         <td class="center"><button class="btn danger btn-del" title="Remove this row">Remove</button></td>
       `;
@@ -270,7 +265,7 @@ Shell,     11.00, 100</pre>
         const volume = parseNum(volEl.value);
         const keep = keepEl.checked;
 
-        // Allow blank rows to be ignored
+        // Ignore blank rows
         if (!supplier && !isFinite(price) && !isFinite(volume)) return;
 
         rows.push({ supplier, price, volume, keep });
@@ -362,7 +357,7 @@ Shell,     11.00, 100</pre>
         return;
       }
 
-      // Sort by ascending unit price
+      // Sort by ascending unit price (/MMBtu)
       const sorted = rows.slice().sort((a, b) => a.price - b.price);
 
       let remaining = target;
@@ -410,16 +405,16 @@ Shell,     11.00, 100</pre>
       const shortage = Math.max(0, target - totalVol);
       if (shortage > 0) {
         showStatus(
-          `Target: <b>${fmt(target, decimals)} MMSCF</b>. Supply short by <span class="badge-warn"><b>${fmt(shortage, decimals)} MMSCF</b></span>.`,
+          `Target: <b>${fmt(target, decimals)} MMBtu</b>. Supply short by <span class="badge-warn"><b>${fmt(shortage, decimals)} MMBtu</b></span>.`,
           "warn"
         );
       } else {
         showStatus(
-          `Target: <b>${fmt(target, decimals)} MMSCF</b>. Fully covered by the cheapest combination.`,
+          `Target: <b>${fmt(target, decimals)} MMBtu</b>. Fully covered by the cheapest combination.`,
           "ok"
         );
       }
-      $("#totals-line").innerHTML = `Total Cost: <b>${currency} ${fmt(totalCost, decimals)}</b> &nbsp;•&nbsp; Weighted Avg Price: <b>${fmt(wap, decimals)} / MMSCF</b>`;
+      $("#totals-line").innerHTML = `Total Cost: <b>${currency} ${fmt(totalCost, decimals)}</b> &nbsp;•&nbsp; Weighted Avg Price: <b>${fmt(wap, decimals)} / MMBtu</b>`;
 
       lastSolution = { currency, decimals, target, take, totalVol, totalCost, wap };
       $("#btn-export-solution").disabled = take.length === 0;
@@ -447,11 +442,11 @@ Shell,     11.00, 100</pre>
       const d = lastSolution.decimals ?? 3;
       const rows = lastSolution.take.map(x => ({
         Supplier: x.supplier,
-        TakenVolume_MMSCF: Number(x.qty.toFixed(d)),
-        UnitPrice_per_MMSCF: Number(x.unit.toFixed(d)),
+        TakenVolume_MMBtu: Number(x.qty.toFixed(d)),
+        UnitPrice_per_MMBtu: Number(x.unit.toFixed(d)),
         Cost: Number(x.cost.toFixed(d))
       }));
-      const header = Object.keys(rows[0] || {Supplier:"",TakenVolume_MMSCF:"",UnitPrice_per_MMSCF:"",Cost:""}).join(",");
+      const header = Object.keys(rows[0] || {Supplier:"",TakenVolume_MMBtu:"",UnitPrice_per_MMBtu:"",Cost:""}).join(",");
       const lines = rows.map(r => Object.values(r).join(","));
       const csv = [header, ...lines].join("\n");
       download("gas-bidding-solution.csv", csv);
@@ -481,12 +476,12 @@ Shell,     11.00, 100</pre>
 
     $("#btn-export-solution").addEventListener("click", exportSolutionCSV);
 
-    // Seed with sample rows
+    // Seed with sample rows (MMBtu)
     [
-      { supplier: "Alpha Gas", price: 10.75, volume: 80 },
-      { supplier: "Vittol",    price: 10.50, volume: 40 },
-      { supplier: "Shell",     price: 11.00, volume: 100 },
-      { supplier: "Beta LNG",  price: 11.20, volume: 50 }
+      { supplier: "Alpha Gas", price: 10.75, volume: 80000 },
+      { supplier: "Vitol",     price: 10.50, volume: 40000 },
+      { supplier: "Shell",     price: 11.00, volume: 100000 },
+      { supplier: "Beta LNG",  price: 11.20, volume: 50000 }
     ].forEach(addRow);
   </script>
 </body>
