@@ -1,509 +1,493 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="utf-8" />
+  <title>Gas Bidding – Cheapest Combo (Price per MMSCF)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;       /* slate-900 */
+      --card: #111827;     /* gray-900 */
+      --muted: #1f2937;    /* gray-800 */
+      --text: #e5e7eb;     /* gray-200 */
+      --sub: #9ca3af;      /* gray-400 */
+      --accent: #22c55e;   /* green-500 */
+      --accent-2: #3b82f6; /* blue-500 */
+      --danger: #ef4444;   /* red-500 */
+      --warning: #f59e0b;  /* amber-500 */
+      --border: #374151;   /* gray-700 */
+      --focus: #93c5fd;    /* blue-300 */
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0b1220, var(--bg));
+      color: var(--text);
+    }
+    .container {
+      max-width: 1100px; margin: 32px auto; padding: 0 16px;
+    }
+    .card {
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 10px; }
+    .sub { color: var(--sub); font-size: 0.95rem; margin-bottom: 16px; }
+    .grid {
+      display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;
+    }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    label { font-size: 0.9rem; color: var(--sub); }
+    input[type="text"], input[type="number"] {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--muted); color: var(--text);
+      outline: none;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }
+    .btn {
+      border: 1px solid var(--border); background: #0b1324; color: var(--text);
+      padding: 10px 14px; border-radius: 10px; cursor: pointer;
+    }
+    .btn:hover { border-color: var(--accent-2); }
+    .btn.primary { background: var(--accent-2); border-color: var(--accent-2); color: white; }
+    .btn.success { background: var(--accent); border-color: var(--accent); color: #08140a; }
+    .btn.danger { background: var(--danger); border-color: var(--danger); color: white; }
+    .btn.warning { background: var(--warning); border-color: var(--warning); color: #1a1203; }
+    .btn.ghost { background: transparent; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left; padding: 10px 8px; border-bottom: 1px dashed var(--border);
+      vertical-align: middle;
+    }
+    th { color: var(--sub); font-weight: 600; font-size: 0.9rem; }
+    tr:last-child td { border-bottom: none; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--sub); }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0b1324; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); color: var(--focus); }
+    .right { text-align: right; }
+    .center { text-align: center; }
+    .mt-8 { margin-top: 16px; }
+    .mt-16 { margin-top: 24px; }
+    .small { font-size: 0.85rem; color: var(--sub); }
+    .note { border-left: 3px solid var(--accent-2); padding: 10px 12px; background: #0b1324; border-radius: 8px; }
+    .wrap { overflow-x: auto; }
+    .badge-warn { color: #fde68a; }
+    .footer { color: var(--sub); font-size: 0.8rem; text-align: center; margin-top: 18px; }
+    .link { color: #93c5fd; text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+    .hidden { display:none; }
+    .num { text-align: right; }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Gas Bidding – Cheapest Combo (Price per MMSCF)&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>:root {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--bg: #0f172a; <span class="Apple-converted-space">      </span>/* slate-900 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--card: #111827; <span class="Apple-converted-space">    </span>/* gray-900 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--muted: #1f2937;<span class="Apple-converted-space">    </span>/* gray-800 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--text: #e5e7eb; <span class="Apple-converted-space">    </span>/* gray-200 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--sub: #9ca3af;<span class="Apple-converted-space">      </span>/* gray-400 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--accent: #22c55e; <span class="Apple-converted-space">  </span>/* green-500 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--accent-2: #3b82f6; /* blue-500 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--danger: #ef4444; <span class="Apple-converted-space">  </span>/* red-500 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--warning: #f59e0b;<span class="Apple-converted-space">  </span>/* amber-500 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--border: #374151; <span class="Apple-converted-space">  </span>/* gray-700 */</p>
-<p class="p1"><span class="Apple-converted-space">      </span>--focus: #93c5fd;<span class="Apple-converted-space">    </span>/* blue-300 */</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>* { box-sizing: border-box; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>html, body { height: 100%; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: linear-gradient(180deg, #0b1220, var(--bg));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>color: var(--text);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.container {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>max-width: 1100px; margin: 32px auto; padding: 0 16px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.card {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(17, 24, 39, 0.85);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--border);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 16px; padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>box-shadow: 0 10px 30px rgba(0,0,0,0.35);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>backdrop-filter: blur(6px);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>h1 { font-size: 1.6rem; margin: 0 0 10px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.sub { color: var(--sub); font-size: 0.95rem; margin-bottom: 16px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.grid {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.row { display: flex; gap: 8px; flex-wrap: wrap; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>label { font-size: 0.9rem; color: var(--sub); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input[type="text"], input[type="number"] {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100%; padding: 10px 12px; border-radius: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--border); background: var(--muted); color: var(--text);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input[type="number"]::-webkit-outer-spin-button,</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>border: 1px solid var(--border); background: #0b1324; color: var(--text);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 14px; border-radius: 10px; cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn:hover { border-color: var(--accent-2); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn.primary { background: var(--accent-2); border-color: var(--accent-2); color: white; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn.success { background: var(--accent); border-color: var(--accent); color: #08140a; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn.danger { background: var(--danger); border-color: var(--danger); color: white; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn.warning { background: var(--warning); border-color: var(--warning); color: #1a1203; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.btn.ghost { background: transparent; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>table { width: 100%; border-collapse: collapse; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>th, td {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>text-align: left; padding: 10px 8px; border-bottom: 1px dashed var(--border);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>vertical-align: middle;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>th { color: var(--sub); font-weight: 600; font-size: 0.9rem; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>tr:last-child td { border-bottom: none; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--sub); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background: #0b1324; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); color: var(--focus); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.right { text-align: right; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.center { text-align: center; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.mt-8 { margin-top: 16px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.mt-16 { margin-top: 24px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.small { font-size: 0.85rem; color: var(--sub); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.note { border-left: 3px solid var(--accent-2); padding: 10px 12px; background: #0b1324; border-radius: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.wrap { overflow-x: auto; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.badge-warn { color: #fde68a; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.footer { color: var(--sub); font-size: 0.8rem; text-align: center; margin-top: 18px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.link { color: #93c5fd; text-decoration: none; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.link:hover { text-decoration: underline; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.hidden { display:none; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.num { text-align: right; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h1&gt;Gas Bidding – Cheapest Combo&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="sub"&gt;Enter bids priced &lt;b&gt;per MMSCF&lt;/b&gt;, set a target volume, then compute the least-cost selection.&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="grid"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="col" style="grid-column: span 3;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Currency label&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="currency" type="text" value="USD" aria-label="Currency label (e.g., USD, RM)" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="col" style="grid-column: span 3;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Target volume (MMSCF)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="target" type="number" min="0" step="0.0001" value="100" aria-label="Target volume in MMSCF" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="col" style="grid-column: span 3;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;label&gt;Round decimals&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="decimals" type="number" min="0" max="6" step="1" value="3" aria-label="Number of decimals" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="col" style="grid-column: span 3; display:flex; align-items:flex-end; gap:8px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="btn primary" id="btn-compute" title="Find cheapest combination"&gt;Find Cheapest Combo&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="btn ghost" id="btn-clear" title="Clear all rows"&gt;Clear Rows&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="mt-16 row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" id="btn-add"&gt;Add Row&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;label class="small"&gt;Tip: paste on any cell to auto-fill columns from a comma-separated line (Supplier, PricePerMMSCF, VolumeMMSCF).&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="mt-8 wrap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;table id="bids-table" aria-label="Bids table"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;#&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;th&gt;Supplier&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;th class="right"&gt;Price / MMSCF&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;th class="right"&gt;Max Volume (MMSCF)&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;th class="center"&gt;Keep?&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;th class="center"&gt;Remove&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;tbody id="bids-body"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Rows inserted here --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="mt-8 row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="file" id="csv-input" accept=".csv,text/csv" class="hidden" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" id="btn-import"&gt;Import CSV&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn" id="btn-export"&gt;Export Bids CSV&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="mt-16"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="btn success" id="btn-export-solution" disabled&gt;Export Solution CSV&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;span class="small"&gt;Columns: Supplier, TakenVolume(MMSCF), UnitPrice(/MMSCF), Cost&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="results" class="mt-8 hidden"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="note"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="status-line"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="totals-line" class="small"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="mt-8 wrap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;table id="solution-table" aria-label="Solution table"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th&gt;#&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th&gt;Supplier&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th class="right"&gt;Taken (MMSCF)&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th class="right"&gt;Unit Price (/MMSCF)&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th class="right"&gt;Cost&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;tbody id="solution-body"&gt;&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;tfoot&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th colspan="2" class="right"&gt;Totals&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th class="right" id="sol-total-vol"&gt;0&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th&gt;&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th class="right" id="sol-total-cost"&gt;0&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th colspan="2" class="right"&gt;Weighted Avg Price (/MMSCF)&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th class="right" id="sol-wap" colspan="3"&gt;0&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>&lt;/tfoot&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="mt-16"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;details&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;summary&gt;&lt;span class="pill"&gt;CSV format help&lt;/span&gt;&lt;/summary&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="small" style="margin-top:10px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;CSV columns (no header needed): &lt;code&gt;Supplier, PricePerMMSCF, MaxVolumeMMSCF&lt;/code&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Example:&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;pre class="kbd"&gt;Alpha Gas, 10.75, 80</p>
-<p class="p1">Beta LNG,<span class="Apple-converted-space">  </span>11.20, 50</p>
-<p class="p1">Vittol,<span class="Apple-converted-space">    </span>10.50, 40</p>
-<p class="p1">Shell, <span class="Apple-converted-space">    </span>11.00, 100&lt;/pre&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/details&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="footer"&gt;Made for quick gas bid screening (price per MMSCF). No data leaves your browser.&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- Helpers ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const $ = (sel) =&gt; document.querySelector(sel);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const $$ = (sel) =&gt; Array.from(document.querySelectorAll(sel));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const fmt = (n, d=3) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!isFinite(n)) return "—";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const v = Number(n);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return v.toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: Math.min(d, 3) });</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const parseNum = (v) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (typeof v === "number") return v;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!v) return NaN;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return Number(String(v).replace(/,/g, "").trim());</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- State ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let lastSolution = null;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- Row management ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function addRow(data = {}) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const tbody = $("#bids-body");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const tr = document.createElement("tr");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>tr.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;td class="center idx"&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;td&gt;&lt;input type="text" placeholder="Supplier" value="${(data.supplier ?? "").toString().replace(/"/g, '&amp;quot;')}" /&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;td class="num"&gt;&lt;input type="number" step="0.0001" min="0" placeholder="Price per MMSCF" value="${data.price ?? ""}" /&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;td class="num"&gt;&lt;input type="number" step="0.0001" min="0" placeholder="Max Volume (MMSCF)" value="${data.volume ?? ""}" /&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;td class="center"&gt;&lt;input type="checkbox" class="keep" ${data.keep === false ? "" : "checked"} title="Uncheck to exclude a row without deleting it" /&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;td class="center"&gt;&lt;button class="btn danger btn-del" title="Remove this row"&gt;Remove&lt;/button&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Paste helper: allow pasting "Supplier, price, volume" into any cell</p>
-<p class="p1"><span class="Apple-converted-space">      </span>tr.querySelectorAll("input").forEach(inp =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>inp.addEventListener("paste", (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const text = (e.clipboardData || window.clipboardData).getData("text");</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (text &amp;&amp; text.split(",").length &gt;= 2) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>e.preventDefault();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const parts = text.split(",").map(s =&gt; s.trim());</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const [supplier, price, volume] = parts;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tr.querySelectorAll("input")[0].value = supplier ?? "";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tr.querySelectorAll("input")[1].value = price ?? "";</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tr.querySelectorAll("input")[2].value = volume ?? "";</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>tr.querySelector(".btn-del").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tr.remove();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>reindex();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>tbody.appendChild(tr);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>reindex();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function reindex() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$$("#bids-body tr").forEach((tr, i) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const idx = tr.querySelector(".idx");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>idx.textContent = String(i + 1);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function readRows() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rows = [];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$$("#bids-body tr").forEach(tr =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const [supplierEl, priceEl, volEl] = tr.querySelectorAll("input");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const keepEl = tr.querySelector(".keep");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const supplier = supplierEl.value.trim();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const price = parseNum(priceEl.value);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const volume = parseNum(volEl.value);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const keep = keepEl.checked;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Allow blank rows to be ignored</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!supplier &amp;&amp; !isFinite(price) &amp;&amp; !isFinite(volume)) return;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>rows.push({ supplier, price, volume, keep });</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return rows;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function clearRows() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#bids-body").innerHTML = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>reindex();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>resetResults();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- CSV I/O ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function toCSV(rows) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const esc = (s) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const v = String(s ?? "");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (v.includes(",") || v.includes('"') || v.includes("\n")) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>return `"${v.replace(/"/g, '""')}"`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return v;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const lines = rows.map(r =&gt; [r.supplier, r.price, r.volume].map(esc).join(","));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return lines.join("\n");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function fromCSV(text) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Simple CSV parser for 3 columns per line</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const lines = text.split(/\r?\n/).map(l =&gt; l.trim()).filter(Boolean);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const parsed = [];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (const line of lines) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Split by commas not inside quotes</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const parts = [];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let cur = "";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let inQ = false;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>for (let i = 0; i &lt; line.length; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>const ch = line[i];</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (ch === '"') {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (inQ &amp;&amp; line[i+1] === '"') { cur += '"'; i++; }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>else inQ = !inQ;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>} else if (ch === ',' &amp;&amp; !inQ) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>parts.push(cur); cur = "";</p>
-<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cur += ch;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>parts.push(cur);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const [supplier="", price="", volume=""] = parts.map(s =&gt; s.trim());</p>
-<p class="p1"><span class="Apple-converted-space">        </span>parsed.push({</p>
-<p class="p1"><span class="Apple-converted-space">          </span>supplier,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>price: parseNum(price),</p>
-<p class="p1"><span class="Apple-converted-space">          </span>volume: parseNum(volume),</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return parsed;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function download(filename, text) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const a = document.createElement("a");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>a.download = filename;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.body.appendChild(a);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>a.click();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>a.remove();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- Compute cheapest combo ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function compute() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>resetResults();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const currency = $("#currency").value.trim() || "USD";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const decimals = Math.max(0, Math.min(6, parseInt($("#decimals").value || "3", 10)));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const target = parseNum($("#target").value);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rows = readRows().filter(r =&gt; r.keep);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const errors = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!isFinite(target) || target &lt;= 0) errors.push("Target volume must be a positive number.");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>rows.forEach((r, i) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!r.supplier) errors.push(`Row ${i+1}: Supplier is empty.`);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!isFinite(r.price) || r.price &lt; 0) errors.push(`Row ${i+1}: Invalid price.`);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!isFinite(r.volume) || r.volume &lt; 0) errors.push(`Row ${i+1}: Invalid volume.`);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (rows.length === 0) errors.push("No valid rows to evaluate.");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (errors.length) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>showStatus(errors.join(" "), "error");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Sort by ascending unit price</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const sorted = rows.slice().sort((a, b) =&gt; a.price - b.price);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>let remaining = target;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const take = [];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (const r of sorted) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (remaining &lt;= 0) break;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const qty = Math.min(remaining, r.volume);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (qty &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>take.push({</p>
-<p class="p1"><span class="Apple-converted-space">            </span>supplier: r.supplier,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>unit: r.price,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>qty,</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cost: qty * r.price</p>
-<p class="p1"><span class="Apple-converted-space">          </span>});</p>
-<p class="p1"><span class="Apple-converted-space">          </span>remaining -= qty;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const totalVol = take.reduce((s, x) =&gt; s + x.qty, 0);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const totalCost = take.reduce((s, x) =&gt; s + x.cost, 0);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const wap = totalVol &gt; 0 ? totalCost / totalVol : NaN;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Render solution</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const tbody = $("#solution-body");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>tbody.innerHTML = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>take.forEach((x, i) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const tr = document.createElement("tr");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tr.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;td class="center"&gt;${i+1}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;td&gt;${x.supplier}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;td class="right"&gt;${fmt(x.qty, decimals)}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;td class="right"&gt;${fmt(x.unit, decimals)}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;td class="right"&gt;${currency} ${fmt(x.cost, decimals)}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tbody.appendChild(tr);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#sol-total-vol").textContent = fmt(totalVol, decimals);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#sol-total-cost").textContent = currency + " " + fmt(totalCost, decimals);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#sol-wap").textContent = fmt(wap, decimals);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const results = $("#results");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>results.classList.remove("hidden");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const shortage = Math.max(0, target - totalVol);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (shortage &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>showStatus(</p>
-<p class="p1"><span class="Apple-converted-space">          </span>`Target: &lt;b&gt;${fmt(target, decimals)} MMSCF&lt;/b&gt;. Supply short by &lt;span class="badge-warn"&gt;&lt;b&gt;${fmt(shortage, decimals)} MMSCF&lt;/b&gt;&lt;/span&gt;.`,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>"warn"</p>
-<p class="p1"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>showStatus(</p>
-<p class="p1"><span class="Apple-converted-space">          </span>`Target: &lt;b&gt;${fmt(target, decimals)} MMSCF&lt;/b&gt;. Fully covered by the cheapest combination.`,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>"ok"</p>
-<p class="p1"><span class="Apple-converted-space">        </span>);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#totals-line").innerHTML = `Total Cost: &lt;b&gt;${currency} ${fmt(totalCost, decimals)}&lt;/b&gt; &amp;nbsp;•&amp;nbsp; Weighted Avg Price: &lt;b&gt;${fmt(wap, decimals)} / MMSCF&lt;/b&gt;`;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>lastSolution = { currency, decimals, target, take, totalVol, totalCost, wap };</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#btn-export-solution").disabled = take.length === 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function resetResults() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#results").classList.add("hidden");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#status-line").innerHTML = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#totals-line").innerHTML = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>lastSolution = null;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>$("#btn-export-solution").disabled = true;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function showStatus(msg, kind="ok") {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const el = $("#status-line");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const icon = kind === "ok" ? "✅" : kind === "warn" ? "⚠️" : "❌";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const color = kind === "ok" ? "var(--accent)" :</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>kind === "warn" ? "var(--warning)" : "var(--danger)";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>el.innerHTML = `${icon} &lt;span style="color:${color}"&gt;${msg}&lt;/span&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- Export solution ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function exportSolutionCSV() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!lastSolution) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const d = lastSolution.decimals ?? 3;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rows = lastSolution.take.map(x =&gt; ({</p>
-<p class="p1"><span class="Apple-converted-space">        </span>Supplier: x.supplier,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>TakenVolume_MMSCF: Number(x.qty.toFixed(d)),</p>
-<p class="p1"><span class="Apple-converted-space">        </span>UnitPrice_per_MMSCF: Number(x.unit.toFixed(d)),</p>
-<p class="p1"><span class="Apple-converted-space">        </span>Cost: Number(x.cost.toFixed(d))</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const header = Object.keys(rows[0] || {Supplier:"",TakenVolume_MMSCF:"",UnitPrice_per_MMSCF:"",Cost:""}).join(",");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const lines = rows.map(r =&gt; Object.values(r).join(","));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const csv = [header, ...lines].join("\n");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>download("gas-bidding-solution.csv", csv);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ---------- Events ----------</p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#btn-add").addEventListener("click", () =&gt; addRow());</p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#btn-clear").addEventListener("click", clearRows);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#btn-compute").addEventListener("click", compute);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#btn-export").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rows = readRows();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (rows.length === 0) return download("bids.csv", "");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>download("bids.csv", toCSV(rows));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#btn-import").addEventListener("click", () =&gt; $("#csv-input").click());</p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#csv-input").addEventListener("change", async (e) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const file = e.target.files?.[0];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!file) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const text = await file.text();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const parsed = fromCSV(text);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (parsed.length === 0) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>clearRows();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>parsed.forEach(r =&gt; addRow(r));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>$("#btn-export-solution").addEventListener("click", exportSolutionCSV);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Seed with sample rows</p>
-<p class="p1"><span class="Apple-converted-space">    </span>[</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ supplier: "Alpha Gas", price: 10.75, volume: 80 },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ supplier: "Vittol",<span class="Apple-converted-space">    </span>price: 10.50, volume: 40 },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ supplier: "Shell", <span class="Apple-converted-space">    </span>price: 11.00, volume: 100 },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ supplier: "Beta LNG",<span class="Apple-converted-space">  </span>price: 11.20, volume: 50 }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>].forEach(addRow);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <div class="container">
+    <div class="card">
+      <h1>Gas Bidding – Cheapest Combo</h1>
+      <div class="sub">Enter bids priced <b>per MMSCF</b>, set a target volume, then compute the least-cost selection.</div>
+
+      <div class="grid">
+        <div class="col" style="grid-column: span 3;">
+          <label>Currency label</label>
+          <input id="currency" type="text" value="USD" aria-label="Currency label (e.g., USD, RM)" />
+        </div>
+        <div class="col" style="grid-column: span 3;">
+          <label>Target volume (MMSCF)</label>
+          <input id="target" type="number" min="0" step="0.0001" value="100" aria-label="Target volume in MMSCF" />
+        </div>
+        <div class="col" style="grid-column: span 3;">
+          <label>Round decimals</label>
+          <input id="decimals" type="number" min="0" max="6" step="1" value="3" aria-label="Number of decimals" />
+        </div>
+        <div class="col" style="grid-column: span 3; display:flex; align-items:flex-end; gap:8px;">
+          <button class="btn primary" id="btn-compute" title="Find cheapest combination">Find Cheapest Combo</button>
+          <button class="btn ghost" id="btn-clear" title="Clear all rows">Clear Rows</button>
+        </div>
+      </div>
+
+      <div class="mt-16 row">
+        <button class="btn" id="btn-add">Add Row</button>
+        <label class="small">Tip: paste on any cell to auto-fill columns from a comma-separated line (Supplier, PricePerMMSCF, VolumeMMSCF).</label>
+      </div>
+
+      <div class="mt-8 wrap">
+        <table id="bids-table" aria-label="Bids table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Supplier</th>
+              <th class="right">Price / MMSCF</th>
+              <th class="right">Max Volume (MMSCF)</th>
+              <th class="center">Keep?</th>
+              <th class="center">Remove</th>
+            </tr>
+          </thead>
+          <tbody id="bids-body">
+            <!-- Rows inserted here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-8 row">
+        <input type="file" id="csv-input" accept=".csv,text/csv" class="hidden" />
+        <button class="btn" id="btn-import">Import CSV</button>
+        <button class="btn" id="btn-export">Export Bids CSV</button>
+      </div>
+
+      <div class="mt-16">
+        <div class="row">
+          <button class="btn success" id="btn-export-solution" disabled>Export Solution CSV</button>
+          <span class="small">Columns: Supplier, TakenVolume(MMSCF), UnitPrice(/MMSCF), Cost</span>
+        </div>
+
+        <div id="results" class="mt-8 hidden">
+          <div class="note">
+            <div id="status-line"></div>
+            <div id="totals-line" class="small"></div>
+          </div>
+
+          <div class="mt-8 wrap">
+            <table id="solution-table" aria-label="Solution table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Supplier</th>
+                  <th class="right">Taken (MMSCF)</th>
+                  <th class="right">Unit Price (/MMSCF)</th>
+                  <th class="right">Cost</th>
+                </tr>
+              </thead>
+              <tbody id="solution-body"></tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="2" class="right">Totals</th>
+                  <th class="right" id="sol-total-vol">0</th>
+                  <th></th>
+                  <th class="right" id="sol-total-cost">0</th>
+                </tr>
+                <tr>
+                  <th colspan="2" class="right">Weighted Avg Price (/MMSCF)</th>
+                  <th class="right" id="sol-wap" colspan="3">0</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-16">
+        <details>
+          <summary><span class="pill">CSV format help</span></summary>
+          <div class="small" style="margin-top:10px;">
+            <p>CSV columns (no header needed): <code>Supplier, PricePerMMSCF, MaxVolumeMMSCF</code></p>
+            <p>Example:</p>
+            <pre class="kbd">Alpha Gas, 10.75, 80
+Beta LNG,  11.20, 50
+Vittol,    10.50, 40
+Shell,     11.00, 100</pre>
+          </div>
+        </details>
+      </div>
+
+      <div class="footer">Made for quick gas bid screening (price per MMSCF). No data leaves your browser.</div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const fmt = (n, d=3) => {
+      if (!isFinite(n)) return "—";
+      const v = Number(n);
+      return v.toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: Math.min(d, 3) });
+    };
+    const parseNum = (v) => {
+      if (typeof v === "number") return v;
+      if (!v) return NaN;
+      return Number(String(v).replace(/,/g, "").trim());
+    };
+
+    // ---------- State ----------
+    let lastSolution = null;
+
+    // ---------- Row management ----------
+    function addRow(data = {}) {
+      const tbody = $("#bids-body");
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td class="center idx"></td>
+        <td><input type="text" placeholder="Supplier" value="${(data.supplier ?? "").toString().replace(/"/g, '&quot;')}" /></td>
+        <td class="num"><input type="number" step="0.0001" min="0" placeholder="Price per MMSCF" value="${data.price ?? ""}" /></td>
+        <td class="num"><input type="number" step="0.0001" min="0" placeholder="Max Volume (MMSCF)" value="${data.volume ?? ""}" /></td>
+        <td class="center"><input type="checkbox" class="keep" ${data.keep === false ? "" : "checked"} title="Uncheck to exclude a row without deleting it" /></td>
+        <td class="center"><button class="btn danger btn-del" title="Remove this row">Remove</button></td>
+      `;
+
+      // Paste helper: allow pasting "Supplier, price, volume" into any cell
+      tr.querySelectorAll("input").forEach(inp => {
+        inp.addEventListener("paste", (e) => {
+          const text = (e.clipboardData || window.clipboardData).getData("text");
+          if (text && text.split(",").length >= 2) {
+            e.preventDefault();
+            const parts = text.split(",").map(s => s.trim());
+            const [supplier, price, volume] = parts;
+            tr.querySelectorAll("input")[0].value = supplier ?? "";
+            tr.querySelectorAll("input")[1].value = price ?? "";
+            tr.querySelectorAll("input")[2].value = volume ?? "";
+          }
+        });
+      });
+
+      tr.querySelector(".btn-del").addEventListener("click", () => {
+        tr.remove();
+        reindex();
+      });
+
+      tbody.appendChild(tr);
+      reindex();
+    }
+
+    function reindex() {
+      $$("#bids-body tr").forEach((tr, i) => {
+        const idx = tr.querySelector(".idx");
+        idx.textContent = String(i + 1);
+      });
+    }
+
+    function readRows() {
+      const rows = [];
+      $$("#bids-body tr").forEach(tr => {
+        const [supplierEl, priceEl, volEl] = tr.querySelectorAll("input");
+        const keepEl = tr.querySelector(".keep");
+        const supplier = supplierEl.value.trim();
+        const price = parseNum(priceEl.value);
+        const volume = parseNum(volEl.value);
+        const keep = keepEl.checked;
+
+        // Allow blank rows to be ignored
+        if (!supplier && !isFinite(price) && !isFinite(volume)) return;
+
+        rows.push({ supplier, price, volume, keep });
+      });
+      return rows;
+    }
+
+    function clearRows() {
+      $("#bids-body").innerHTML = "";
+      reindex();
+      resetResults();
+    }
+
+    // ---------- CSV I/O ----------
+    function toCSV(rows) {
+      const esc = (s) => {
+        const v = String(s ?? "");
+        if (v.includes(",") || v.includes('"') || v.includes("\n")) {
+          return `"${v.replace(/"/g, '""')}"`;
+        }
+        return v;
+      };
+      const lines = rows.map(r => [r.supplier, r.price, r.volume].map(esc).join(","));
+      return lines.join("\n");
+    }
+
+    function fromCSV(text) {
+      // Simple CSV parser for 3 columns per line
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const parsed = [];
+      for (const line of lines) {
+        // Split by commas not inside quotes
+        const parts = [];
+        let cur = "";
+        let inQ = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+            else inQ = !inQ;
+          } else if (ch === ',' && !inQ) {
+            parts.push(cur); cur = "";
+          } else {
+            cur += ch;
+          }
+        }
+        parts.push(cur);
+        const [supplier="", price="", volume=""] = parts.map(s => s.trim());
+        parsed.push({
+          supplier,
+          price: parseNum(price),
+          volume: parseNum(volume),
+        });
+      }
+      return parsed;
+    }
+
+    function download(filename, text) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    // ---------- Compute cheapest combo ----------
+    function compute() {
+      resetResults();
+
+      const currency = $("#currency").value.trim() || "USD";
+      const decimals = Math.max(0, Math.min(6, parseInt($("#decimals").value || "3", 10)));
+      const target = parseNum($("#target").value);
+
+      const rows = readRows().filter(r => r.keep);
+      const errors = [];
+
+      if (!isFinite(target) || target <= 0) errors.push("Target volume must be a positive number.");
+      rows.forEach((r, i) => {
+        if (!r.supplier) errors.push(`Row ${i+1}: Supplier is empty.`);
+        if (!isFinite(r.price) || r.price < 0) errors.push(`Row ${i+1}: Invalid price.`);
+        if (!isFinite(r.volume) || r.volume < 0) errors.push(`Row ${i+1}: Invalid volume.`);
+      });
+
+      if (rows.length === 0) errors.push("No valid rows to evaluate.");
+
+      if (errors.length) {
+        showStatus(errors.join(" "), "error");
+        return;
+      }
+
+      // Sort by ascending unit price
+      const sorted = rows.slice().sort((a, b) => a.price - b.price);
+
+      let remaining = target;
+      const take = [];
+      for (const r of sorted) {
+        if (remaining <= 0) break;
+        const qty = Math.min(remaining, r.volume);
+        if (qty > 0) {
+          take.push({
+            supplier: r.supplier,
+            unit: r.price,
+            qty,
+            cost: qty * r.price
+          });
+          remaining -= qty;
+        }
+      }
+
+      const totalVol = take.reduce((s, x) => s + x.qty, 0);
+      const totalCost = take.reduce((s, x) => s + x.cost, 0);
+      const wap = totalVol > 0 ? totalCost / totalVol : NaN;
+
+      // Render solution
+      const tbody = $("#solution-body");
+      tbody.innerHTML = "";
+      take.forEach((x, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="center">${i+1}</td>
+          <td>${x.supplier}</td>
+          <td class="right">${fmt(x.qty, decimals)}</td>
+          <td class="right">${fmt(x.unit, decimals)}</td>
+          <td class="right">${currency} ${fmt(x.cost, decimals)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      $("#sol-total-vol").textContent = fmt(totalVol, decimals);
+      $("#sol-total-cost").textContent = currency + " " + fmt(totalCost, decimals);
+      $("#sol-wap").textContent = fmt(wap, decimals);
+
+      const results = $("#results");
+      results.classList.remove("hidden");
+
+      const shortage = Math.max(0, target - totalVol);
+      if (shortage > 0) {
+        showStatus(
+          `Target: <b>${fmt(target, decimals)} MMSCF</b>. Supply short by <span class="badge-warn"><b>${fmt(shortage, decimals)} MMSCF</b></span>.`,
+          "warn"
+        );
+      } else {
+        showStatus(
+          `Target: <b>${fmt(target, decimals)} MMSCF</b>. Fully covered by the cheapest combination.`,
+          "ok"
+        );
+      }
+      $("#totals-line").innerHTML = `Total Cost: <b>${currency} ${fmt(totalCost, decimals)}</b> &nbsp;•&nbsp; Weighted Avg Price: <b>${fmt(wap, decimals)} / MMSCF</b>`;
+
+      lastSolution = { currency, decimals, target, take, totalVol, totalCost, wap };
+      $("#btn-export-solution").disabled = take.length === 0;
+    }
+
+    function resetResults() {
+      $("#results").classList.add("hidden");
+      $("#status-line").innerHTML = "";
+      $("#totals-line").innerHTML = "";
+      lastSolution = null;
+      $("#btn-export-solution").disabled = true;
+    }
+
+    function showStatus(msg, kind="ok") {
+      const el = $("#status-line");
+      const icon = kind === "ok" ? "✅" : kind === "warn" ? "⚠️" : "❌";
+      const color = kind === "ok" ? "var(--accent)" :
+                    kind === "warn" ? "var(--warning)" : "var(--danger)";
+      el.innerHTML = `${icon} <span style="color:${color}">${msg}</span>`;
+    }
+
+    // ---------- Export solution ----------
+    function exportSolutionCSV() {
+      if (!lastSolution) return;
+      const d = lastSolution.decimals ?? 3;
+      const rows = lastSolution.take.map(x => ({
+        Supplier: x.supplier,
+        TakenVolume_MMSCF: Number(x.qty.toFixed(d)),
+        UnitPrice_per_MMSCF: Number(x.unit.toFixed(d)),
+        Cost: Number(x.cost.toFixed(d))
+      }));
+      const header = Object.keys(rows[0] || {Supplier:"",TakenVolume_MMSCF:"",UnitPrice_per_MMSCF:"",Cost:""}).join(",");
+      const lines = rows.map(r => Object.values(r).join(","));
+      const csv = [header, ...lines].join("\n");
+      download("gas-bidding-solution.csv", csv);
+    }
+
+    // ---------- Events ----------
+    $("#btn-add").addEventListener("click", () => addRow());
+    $("#btn-clear").addEventListener("click", clearRows);
+    $("#btn-compute").addEventListener("click", compute);
+
+    $("#btn-export").addEventListener("click", () => {
+      const rows = readRows();
+      if (rows.length === 0) return download("bids.csv", "");
+      download("bids.csv", toCSV(rows));
+    });
+
+    $("#btn-import").addEventListener("click", () => $("#csv-input").click());
+    $("#csv-input").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      const parsed = fromCSV(text);
+      if (parsed.length === 0) return;
+      clearRows();
+      parsed.forEach(r => addRow(r));
+    });
+
+    $("#btn-export-solution").addEventListener("click", exportSolutionCSV);
+
+    // Seed with sample rows
+    [
+      { supplier: "Alpha Gas", price: 10.75, volume: 80 },
+      { supplier: "Vittol",    price: 10.50, volume: 40 },
+      { supplier: "Shell",     price: 11.00, volume: 100 },
+      { supplier: "Beta LNG",  price: 11.20, volume: 50 }
+    ].forEach(addRow);
+  </script>
 </body>
 </html>
